@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app1-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app1
+  template:
+    metadata:
+      labels:
+        app: app1
+    spec:
+      containers:
+        - name: app1
+          image: syedamisbah/app1
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - mountPath: "/syedamisbah_PV_dir"
+              name: syedamisbah-storage
+      volumes:
+        - name: syedamisbah-storage
+          persistentVolumeClaim:
+            claimName: syedamisbah-pvc

@@ -1,0 +1,33 @@
+#steps:
+#  - name: 'gcr.io/cloud-builders/docker'
+#    args: ['build', '-t', 'gcr.io/syedamisbah/app1:latest', '.']
+#  - name: 'gcr.io/cloud-builders/docker'
+#    args: ['push', 'gcr.io/syedamisbah/app1:latest']
+#
+#images:
+#  - 'gcr.io/syedamisbah/app1:latest'
+#
+
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t',
+           'us-central1-docker.pkg.dev/${PROJECT_ID}/syedamisbah/app1',
+           './app1']
+
+  # Docker Push
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push',
+           'us-central1-docker.pkg.dev/${PROJECT_ID}/syedamisbah/app2']
+
+  - name: 'gcr.io/cloud-builders/kubectl'
+    id: 'Deploy App1'
+    args:
+      - 'apply'
+      - '-f'
+      - './app1/deployment-app1.yaml'
+    env:
+      - 'CLOUDSDK_COMPUTE_ZONE=us-central1-a'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-1'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
